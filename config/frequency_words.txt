@@ -23,23 +23,6 @@ DJI
 稚晖君
 彭志辉
 
-黑神话
-冯骥
-
-影之刃零
-梁其伟
-
-哪吒
-饺子
-杨宇
-!车
-!餐
-
-三体
-流浪地球
-刘慈欣
-郭帆
-
 申奥
 
 京东
@@ -49,8 +32,23 @@ DJI
 bytedance
 张一鸣
 
+
+阿里巴巴
+Alibaba
+马云
+
+腾讯
+Tencent
+马化腾
+
+小米
+Xiaomi
+雷军
+
 特斯拉
 马斯克
+grok
+xai
 
 微软
 Microsoft
@@ -69,9 +67,15 @@ deepmind
 chatgpt
 openai
 sora
+Sam Altman
 
 claude
 Anthropic
+
+Meta
+Llama
+马克·扎克伯格
+扎克伯格
 
 iphone
 ipad
@@ -95,6 +99,12 @@ ai
 
 芯片
 光刻机
+台积电
+TSMC
+阿斯麦
+ASML
+三星
+Samsung
 
 科技
 
@@ -111,3 +121,13 @@ ai
 宇宙
 飞船
 航空
+
+数字人民币
+稳定币
+比特币
+数字货币
+数字币
+BTCUSD
+ETHUSD
+
+新能源
