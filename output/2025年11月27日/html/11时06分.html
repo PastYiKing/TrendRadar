@@ -1,0 +1,1054 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>热点新闻分析</title>
+        <style>
+            * { box-sizing: border-box; }
+            body { 
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+                margin: 0; 
+                padding: 16px; 
+                background: #fafafa;
+                color: #333;
+                line-height: 1.5;
+            }
+            
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+            }
+            
+            .header {
+                background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+                color: white;
+                padding: 32px 24px;
+                text-align: center;
+            }
+            
+            .header-title {
+                font-size: 22px;
+                font-weight: 700;
+                margin: 0 0 20px 0;
+            }
+            
+            .header-info {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+                font-size: 14px;
+                opacity: 0.95;
+            }
+            
+            .info-item {
+                text-align: center;
+            }
+            
+            .info-label {
+                display: block;
+                font-size: 12px;
+                opacity: 0.8;
+                margin-bottom: 4px;
+            }
+            
+            .info-value {
+                font-weight: 600;
+                font-size: 16px;
+            }
+            
+            .content {
+                padding: 24px;
+            }
+            
+            .word-group {
+                margin-bottom: 40px;
+            }
+            
+            .word-group:first-child {
+                margin-top: 0;
+            }
+            
+            .word-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                padding-bottom: 8px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .word-info {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            
+            .word-name {
+                font-size: 17px;
+                font-weight: 600;
+                color: #1a1a1a;
+            }
+            
+            .word-count {
+                color: #666;
+                font-size: 13px;
+                font-weight: 500;
+            }
+            
+            .word-count.hot { color: #dc2626; font-weight: 600; }
+            .word-count.warm { color: #ea580c; font-weight: 600; }
+            
+            .word-index {
+                color: #999;
+                font-size: 12px;
+            }
+            
+            .news-item {
+                margin-bottom: 20px;
+                padding: 16px 0;
+                border-bottom: 1px solid #f5f5f5;
+                position: relative;
+                display: flex;
+                gap: 12px;
+                align-items: center;
+            }
+            
+            .news-item:last-child {
+                border-bottom: none;
+            }
+            
+            .news-item.new::after {
+                content: "NEW";
+                position: absolute;
+                top: 12px;
+                right: 0;
+                background: #fbbf24;
+                color: #92400e;
+                font-size: 9px;
+                font-weight: 700;
+                padding: 3px 6px;
+                border-radius: 4px;
+                letter-spacing: 0.5px;
+            }
+            
+            .news-number {
+                color: #999;
+                font-size: 13px;
+                font-weight: 600;
+                min-width: 20px;
+                text-align: center;
+                flex-shrink: 0;
+                background: #f8f9fa;
+                border-radius: 50%;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                align-self: flex-start;
+                margin-top: 8px;
+            }
+            
+            .news-content {
+                flex: 1;
+                min-width: 0;
+                padding-right: 40px;
+            }
+            
+            .news-item.new .news-content {
+                padding-right: 50px;
+            }
+            
+            .news-header {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 8px;
+                flex-wrap: wrap;
+            }
+            
+            .source-name {
+                color: #666;
+                font-size: 12px;
+                font-weight: 500;
+            }
+            
+            .rank-num {
+                color: #fff;
+                background: #6b7280;
+                font-size: 10px;
+                font-weight: 700;
+                padding: 2px 6px;
+                border-radius: 10px;
+                min-width: 18px;
+                text-align: center;
+            }
+            
+            .rank-num.top { background: #dc2626; }
+            .rank-num.high { background: #ea580c; }
+            
+            .time-info {
+                color: #999;
+                font-size: 11px;
+            }
+            
+            .count-info {
+                color: #059669;
+                font-size: 11px;
+                font-weight: 500;
+            }
+            
+            .news-title {
+                font-size: 15px;
+                line-height: 1.4;
+                color: #1a1a1a;
+                margin: 0;
+            }
+            
+            .news-link {
+                color: #2563eb;
+                text-decoration: none;
+            }
+            
+            .news-link:hover {
+                text-decoration: underline;
+            }
+            
+            .news-link:visited {
+                color: #7c3aed;
+            }
+            
+            .new-section {
+                margin-top: 40px;
+                padding-top: 24px;
+                border-top: 2px solid #f0f0f0;
+            }
+            
+            .new-section-title {
+                color: #1a1a1a;
+                font-size: 16px;
+                font-weight: 600;
+                margin: 0 0 20px 0;
+            }
+            
+            .new-source-group {
+                margin-bottom: 24px;
+            }
+            
+            .new-source-title {
+                color: #666;
+                font-size: 13px;
+                font-weight: 500;
+                margin: 0 0 12px 0;
+                padding-bottom: 6px;
+                border-bottom: 1px solid #f5f5f5;
+            }
+            
+            .new-item {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 8px 0;
+                border-bottom: 1px solid #f9f9f9;
+            }
+            
+            .new-item:last-child {
+                border-bottom: none;
+            }
+            
+            .new-item-number {
+                color: #999;
+                font-size: 12px;
+                font-weight: 600;
+                min-width: 18px;
+                text-align: center;
+                flex-shrink: 0;
+                background: #f8f9fa;
+                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .new-item-rank {
+                color: #fff;
+                background: #6b7280;
+                font-size: 10px;
+                font-weight: 700;
+                padding: 3px 6px;
+                border-radius: 8px;
+                min-width: 20px;
+                text-align: center;
+                flex-shrink: 0;
+            }
+            
+            .new-item-rank.top { background: #dc2626; }
+            .new-item-rank.high { background: #ea580c; }
+            
+            .new-item-content {
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .new-item-title {
+                font-size: 14px;
+                line-height: 1.4;
+                color: #1a1a1a;
+                margin: 0;
+            }
+            
+            .error-section {
+                background: #fef2f2;
+                border: 1px solid #fecaca;
+                border-radius: 8px;
+                padding: 16px;
+                margin-bottom: 24px;
+            }
+            
+            .error-title {
+                color: #dc2626;
+                font-size: 14px;
+                font-weight: 600;
+                margin: 0 0 8px 0;
+            }
+            
+            .error-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .error-item {
+                color: #991b1b;
+                font-size: 13px;
+                padding: 2px 0;
+                font-family: 'SF Mono', Consolas, monospace;
+            }
+            
+            @media (max-width: 480px) {
+                body { padding: 12px; }
+                .header { padding: 24px 20px; }
+                .content { padding: 20px; }
+                .header-info { grid-template-columns: 1fr; gap: 12px; }
+                .news-header { gap: 6px; }
+                .news-content { padding-right: 45px; }
+                .news-item { gap: 8px; }
+                .new-item { gap: 8px; }
+                .news-number { width: 20px; height: 20px; font-size: 12px; }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <div class="header-title">热点新闻分析</div>
+                <div class="header-info">
+                    <div class="info-item">
+                        <span class="info-label">报告类型</span>
+                        <span class="info-value">实时分析</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">新闻总数</span>
+                        <span class="info-value">115 条</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">热点新闻</span>
+                        <span class="info-value">55 条</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">生成时间</span>
+                        <span class="info-value">11-27 11:06</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content">
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">美国 日本 韩国</div>
+                            <div class="word-count hot">23 条</div>
+                        </div>
+                        <div class="word-index">1/14</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num top">2</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127104910654800" target="_blank" class="news-link">韩国央行行长李昌镛：担忧年轻韩国人进行海外投资。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">2</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num top">3</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127104753573800" target="_blank" class="news-link">韩国央行行长李昌镛：韩国央行当前货币互换协议仍有充足空间可资利用。不担心外汇水平。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">3</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num high">5</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127104725058800" target="_blank" class="news-link">韩国央行行长李昌镛：不认为延长与国民养老金管理公团的货币互换存在较大下行风险。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">4</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">财联社热门</span><span class="rank-num ">6</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.cls.cn/detail/2212191" target="_blank" class="news-link">美国将部分对华关税豁免期延长至2026年11月10日</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">5</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">7</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127104228992800" target="_blank" class="news-link">韩国央行行长李昌镛谈及国民年金制度后，韩元兑美元上涨，升至1美元兑1463.10韩元。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">6</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">11</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127103907446800" target="_blank" class="news-link">韩国央行行长李昌镛：如有需要，韩国央行拥有稳定外汇市场的政策工具。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">7</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">12</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127103825348800" target="_blank" class="news-link">韩国央行行长李昌镛：随着基金规模日益庞大，韩国央行需要与政府机构展开讨论。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">8</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">13</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127103722404800" target="_blank" class="news-link">韩国央行行长李昌镛：国民养老金管理公团在对冲策略方面需保持政策的模糊性和灵活性。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">9</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">14</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127103519869800" target="_blank" class="news-link">韩国央行行长李昌镛：国民养老金管理公团的美元对冲规则几乎是公开的秘密。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">10</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">15</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127103422096800" target="_blank" class="news-link">韩国央行行长李昌镛：在国民养老金管理公团中，适度的美元对冲是必要的。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">11</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">17</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127103219350800" target="_blank" class="news-link">韩国央行行长李昌镛：需建立新框架以保护养老金体系中的养老基金。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">12</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">今日头条</span><span class="rank-num ">18</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.toutiao.com/trending/7576964440420024358/" target="_blank" class="news-link">日本一再狡辩 中方：行不通</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">13</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">19</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127102802037800" target="_blank" class="news-link">韩国央行行长李昌镛：本地散户的杠杆海外投资似乎风险较高。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">14</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">20</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127102744237800" target="_blank" class="news-link">韩国央行行长李昌镛：担心韩元贬值可能导致消费价格上涨。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">15</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">21</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127102729990800" target="_blank" class="news-link">韩国央行行长李昌镛：以国内市场为主的公司可能会因韩元贬值而失去竞争力。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">16</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">22</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127102647434800" target="_blank" class="news-link">韩国央行行长李昌镛：韩国信用违约互换溢价状况良好。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">17</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">23</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127102614137800" target="_blank" class="news-link">韩国央行行长李昌镛：外汇市场已呈现羊群效应。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">18</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">24</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127102608031800" target="_blank" class="news-link">韩国央行行长李昌镛：韩元贬值幅度超过其他同行货币。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">19</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">25</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127102559947800" target="_blank" class="news-link">韩国央行行长李昌镛：外汇市场波动部分源于居民购买外国股票。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">20</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">百度热搜</span><span class="rank-num ">27</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.baidu.com/s?wd=%E5%86%9B%E6%8A%A5%EF%BC%9A%E7%BB%9D%E4%B8%8D%E8%AE%B8%E6%97%A5%E6%9C%AC%E9%87%8D%E8%B5%B0%E5%86%9B%E5%9B%BD%E4%B8%BB%E4%B9%89%E8%80%81%E8%B7%AF" target="_blank" class="news-link">军报：绝不许日本重走军国主义老路</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">21</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">27</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127102434532800" target="_blank" class="news-link">韩国央行行长李昌镛：除行长李昌镛外，韩国央行委员会成员在短期内是否应降息还是按兵不动的问题上，意见呈现五五分的局面。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">22</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">29</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127102243976800" target="_blank" class="news-link">韩国央行行长李昌镛：三位成员表示，他们对近期降息持开放态度。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">23</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">30</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127102234521800" target="_blank" class="news-link">韩国央行行长李昌镛：委员Shin Sung-Hwan表示国内需求复苏力度不足。</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">国产 中国</div>
+                            <div class="word-count warm">6 条</div>
+                        </div>
+                        <div class="word-index">2/14</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num top">1</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127105114415800" target="_blank" class="news-link">金十图示：2025年11月27日（周四）中国科技互联网公司市值排名TOP 50一览</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">2</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">财联社深度</span><span class="rank-num top">2</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.cls.cn/detail/2212304" target="_blank" class="news-link">《新时代的中国军控、裁军与防扩散》白皮书发布</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">3</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">财联社深度</span><span class="rank-num top">3</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.cls.cn/detail/2212250" target="_blank" class="news-link">麻省理工研究：中国在全球开源AI模型市场上首度超越美国</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">4</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">财联社热门</span><span class="rank-num ">10</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.cls.cn/detail/2212184" target="_blank" class="news-link">11月27日投资避雷针：国产中间件龙头连续四年财务造假 被终止上市</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">5</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">28</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/565.htm" target="_blank" class="news-link">CHERRY 樱桃轴体生产移至中国与斯洛伐克，考虑出售外设或另一部门</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">6</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">百度热搜</span><span class="rank-num ">30</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.baidu.com/s?wd=%E5%88%9A%E6%9E%9C%E9%87%91%E4%B8%9C%E9%83%A8%E4%B8%AD%E5%9B%BD%E5%85%AC%E6%B0%91%E5%92%8C%E4%BC%81%E4%B8%9A%E5%B0%BD%E5%BF%AB%E6%92%A4%E7%A6%BB" target="_blank" class="news-link">刚果金东部中国公民和企业尽快撤离</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">华为 鸿蒙 HarmonyOS 任正非</div>
+                            <div class="word-count warm">5 条</div>
+                        </div>
+                        <div class="word-index">3/14</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">12</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/583.htm" target="_blank" class="news-link">鸿蒙智行发言人：近期识别到网上大量集中攻击，将坚决追究到底</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">2</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">20</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/574.htm" target="_blank" class="news-link">苹果华为尝鲜后，消息称小米 OPPO vivo 等多家手机厂商取消 Air 机型</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">3</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">24</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/569.htm" target="_blank" class="news-link">华为星跃随行键盘上架：支持星闪、适用 MateBook Fold / MatePad Edge，999 元</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">4</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">25</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/568.htm" target="_blank" class="news-link">华为回应 Mate X7 / Mate 80 系列手机 HarmonyOS 6 系统不可变更：已满足日常绝大多数场景需要</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">5</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">27</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/566.htm" target="_blank" class="news-link">轻薄拍照新机被曝大概率春节前发布：搭载 8 系 9 系芯片，预计为华为 nova 15 系列</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">特朗普</div>
+                            <div class="word-count ">4 条</div>
+                        </div>
+                        <div class="word-index">4/14</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">百度热搜</span><span class="rank-num ">19</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.baidu.com/s?wd=%E7%89%B9%E6%9C%97%E6%99%AE%E6%96%BD%E5%8E%8B%E9%AB%98%E5%B8%82%E5%88%AB%E5%9C%A8%E5%8F%B0%E6%B9%BE%E9%97%AE%E9%A2%98%E4%B8%8A%E6%8C%91%E8%A1%85" target="_blank" class="news-link">特朗普施压高市别在台湾问题上挑衅</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">2</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">澎湃新闻</span><span class="rank-num ">19</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://m.thepaper.cn/newsDetail_forward_32049650" target="_blank" class="news-link">观察｜俄乌和谈中的特朗普之道：让亲信而非外交官“撮合交易”</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">3</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">今日头条</span><span class="rank-num ">23</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.toutiao.com/trending/7577192276787465747/" target="_blank" class="news-link">特朗普为何称明年G20峰会不邀请南非</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">4</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">28</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127102251918800" target="_blank" class="news-link">美国总统特朗普：美国必须重新审查所有在美国前总统拜登任内从阿富汗入境的外国人。</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">芯片 光刻机 台积电 TSMC</div>
+                            <div class="word-count ">3 条</div>
+                        </div>
+                        <div class="word-index">5/14</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">11</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/584.htm" target="_blank" class="news-link">荣耀 500 系列手机开售：全系骁龙 8 系芯片、8000mAh 电池，2699 元起</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">2</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">18</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/576.htm" target="_blank" class="news-link">陈立武回应：台积电“泄密”指控毫无根据，支持罗唯仁加入英特尔</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">3</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">22</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/572.htm" target="_blank" class="news-link">三星 Exynos 2500 芯片对决骁龙：NPU 算力落后，靠软件优化追赶</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">阿斯麦 ASML 三星 Samsung</div>
+                            <div class="word-count ">3 条</div>
+                        </div>
+                        <div class="word-index">6/14</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num top">1</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/598.htm" target="_blank" class="news-link">消息称三星 12 月 8 日启动 One UI 8.5 首轮 Beta 测试</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">2</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num high">4</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/594.htm" target="_blank" class="news-link">三星 One UI 8.5 前瞻：基于安卓 16，引入情景感知 AI</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">3</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">26</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/567.htm" target="_blank" class="news-link">三星首款采用 LG W-OLED 面板的显示器被曝明年登场：可切换 4K 165Hz 和 FHD 330Hz</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">微软 Microsoft</div>
+                            <div class="word-count ">2 条</div>
+                        </div>
+                        <div class="word-index">7/14</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">9</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/589.htm" target="_blank" class="news-link">微软推送 Win11 RP 26x00.7309 预览版：优化文件管理器深色模式等</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">2</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">14</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/581.htm" target="_blank" class="news-link">微软称 Xbox 云游戏总时长同比暴涨 45%</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">英伟达 NVIDIA 黄仁勋 AMD</div>
+                            <div class="word-count ">2 条</div>
+                        </div>
+                        <div class="word-index">8/14</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">金十数据</span><span class="rank-num ">10</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://flash.jin10.com/detail/20251127104115363800" target="_blank" class="news-link">英伟达打起市值保卫战，通过备忘录抨击空头</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">2</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">财联社深度</span><span class="rank-num ">12-13</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.cls.cn/detail/2212209" target="_blank" class="news-link">美银力挺英伟达：到2030年仍将主导市场 但市场份额或略微下滑</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">科技</div>
+                            <div class="word-count ">2 条</div>
+                        </div>
+                        <div class="word-index">9/14</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">财联社深度</span><span class="rank-num ">8</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.cls.cn/detail/2212226" target="_blank" class="news-link">知名科技分析师：AI革命仍处“开端”，尤其看好这10只股票！</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">2</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">15</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/580.htm" target="_blank" class="news-link">建兴储存科技推出大容量企业级 SATA 固态硬盘 ER4，随机读写性能业界领先</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">字节 bytedance 张一鸣</div>
+                            <div class="word-count ">1 条</div>
+                        </div>
+                        <div class="word-index">10/14</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">财联社深度</span><span class="rank-num high">4</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.cls.cn/detail/2212225" target="_blank" class="news-link">字节跳动否认番茄系300亿营收 但红果试图“通吃”短剧</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">小米 Xiaomi 雷军</div>
+                            <div class="word-count ">1 条</div>
+                        </div>
+                        <div class="word-index">11/14</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">16</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/579.htm" target="_blank" class="news-link">小米 Xiaomi HAD 增强版开启推送，官方提醒辅助驾驶不是自动驾驶</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">谷歌 google deepmind gemini</div>
+                            <div class="word-count ">1 条</div>
+                        </div>
+                        <div class="word-index">12/14</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">8</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/590.htm" target="_blank" class="news-link">发布 Gemini 3 后，谷歌 CEO 皮查伊希望自己和团队都能好好休息</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">机器人</div>
+                            <div class="word-count ">1 条</div>
+                        </div>
+                        <div class="word-index">13/14</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">6</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/592.htm" target="_blank" class="news-link">工信部：推动传统玩具文具和智能技术的深度融合，加强养老服务机器人研发</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">月球 登月 火星 宇宙 飞船 航空</div>
+                            <div class="word-count ">1 条</div>
+                        </div>
+                        <div class="word-index">14/14</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num high">5</span><span class="time-info">11时06分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/900/593.htm" target="_blank" class="news-link">vivo S50 系列手机侧边外观图公布：全系航空铝金属中框，全新纱缎光刻工艺</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    
